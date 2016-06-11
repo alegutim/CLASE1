@@ -45,6 +45,7 @@ private Boolean IsTrue = true;
                                                 ModelItem modelItem = adapter.getItem(position);
                                                 ModelItem modelItem2 = array.get(position);
                                                 Toast.makeText(getActivity(),modelItem2.item,Toast.LENGTH_SHORT).show();
+
                                             }
                                         });
 
