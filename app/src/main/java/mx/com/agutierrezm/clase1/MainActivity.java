@@ -3,11 +3,15 @@ package mx.com.agutierrezm.clase1;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import mx.com.agutierrezm.clase1.model.user;
+import mx.com.agutierrezm.clase1.service.ServiceTimer;
 import mx.com.agutierrezm.clase1.util.PreferenceUtil;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -26,6 +30,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.activity_relative_btnlogin).setOnClickListener(this);
         findViewById(R.id.activity_relative_btnregister).setOnClickListener(this);
         preferenceUtil = new PreferenceUtil(getApplicationContext());
+        CheckBox chkRememberMe = (CheckBox) findViewById(R.id.chkRememberMe);
+        chkRememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                Log.d(ServiceTimer.TAG,"Checkeo es: " + isChecked);
+            }
+        });
 
     }
 
@@ -60,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             /*ntent intent =new  Intent(getApplicationContext(),ActivityDetail.class);*/
                 intent.putExtra("key_user", muser);
                 startActivity(intent);
+                startService(new Intent(getApplicationContext(), ServiceTimer.class));
             } else {
                 Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
             }

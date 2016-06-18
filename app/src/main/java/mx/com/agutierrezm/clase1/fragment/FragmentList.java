@@ -1,6 +1,8 @@
 package mx.com.agutierrezm.clase1.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -61,6 +63,32 @@ private ItemDataSource itemDataSource;
         IsTrue = !(modelItemList.size()%2==0);
         counter  = modelItemList.size();
         listView.setAdapter(new AdapterItemList(getActivity(),modelItemList));
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AdapterItemList adapter = (AdapterItemList) parent.getAdapter();
+                final ModelItem modelItem = adapter.getItem(position);
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(R.string.delete_title)
+                        .setMessage(String.format("¿Desea borrar el elemento  %s?",modelItem.item))
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                itemDataSource.deleteItem(modelItem);
+                                listView.setAdapter(new AdapterItemList(getActivity(),itemDataSource.getAllItems()));
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        }).setCancelable(false).create().show();
+
+
+                return true;
+            }
+        });
         return view;
     }
 
@@ -73,7 +101,7 @@ private ItemDataSource itemDataSource;
                 if (!TextUtils.isEmpty(itemData)){
                     ModelItem item = new ModelItem();
                     item.item= itemData;
-                    item.id = "Description: " + counter;
+                    item.description = "Description: " + counter;
                     item.resource_id = IsTrue ? R.drawable.ic_action_face_unlock:R.drawable.ic_action_bug_report;
                     //array.add(item);
                     itemDataSource.saveItem(item);
@@ -85,4 +113,6 @@ private ItemDataSource itemDataSource;
                 break;
         }
     }
+
+
 }

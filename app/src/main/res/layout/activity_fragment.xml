@@ -4,6 +4,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        android:padding="2dp"
+        android:gravity="right"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:id="@+id/txtTimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -30,7 +38,7 @@
     android:layout_height="match_parent">
     <fragment
         android:id="@+id/fragment_xml"
-        android:layout_weight="1"
+        android:layout_weight="4"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_profile"

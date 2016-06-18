@@ -1,14 +1,31 @@
 package mx.com.agutierrezm.clase1;
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import mx.com.agutierrezm.clase1.fragment.FragmentList;
 import mx.com.agutierrezm.clase1.fragment.FragmentProfile;
+import mx.com.agutierrezm.clase1.service.ServiceTimer;
 
 public class FragmentActivity extends AppCompatActivity implements View.OnClickListener {
+    TextView txtTimer;
+    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int count = intent.getExtras().getInt("timer");
+            txtTimer.setText(String.format("Session length %s seconds", count));
+
+            //intent.getAction().equals(ServiceTimer.ACTION_SEND_TIMER))))};
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +35,7 @@ public class FragmentActivity extends AppCompatActivity implements View.OnClickL
 
         findViewById(R.id.btnFragmentA).setOnClickListener(this);
         findViewById(R.id.btnFragmentB).setOnClickListener(this);
+        txtTimer = (TextView)findViewById(R.id.txtTimer);
 
     }
 
@@ -50,6 +68,29 @@ public class FragmentActivity extends AppCompatActivity implements View.OnClickL
         if ( fragment!= null ) {
             ((FragmentProfile)fragment).changeImage();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ServiceTimer.ACTION_SEND_TIMER);
+        registerReceiver(broadcastReceiver,intentFilter);
+        Log.d(ServiceTimer.TAG,"OnPause iniciando broadcast");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(ServiceTimer.TAG,"OnPause quitando broadcast");
+        unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(ServiceTimer.TAG,"onDestroy terminando broadcast");
+        stopService(new Intent(getApplicationContext(),ServiceTimer.class));
     }
 }
 
