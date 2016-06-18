@@ -31,10 +31,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
-        <Space
+        <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:text="Register"
+            android:layout_weight="1"
+            android:id="@+id/activity_relative_btnregister"/>
 
         <Button
             android:layout_width="match_parent"

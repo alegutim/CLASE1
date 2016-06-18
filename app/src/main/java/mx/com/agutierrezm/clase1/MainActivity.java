@@ -7,10 +7,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import mx.com.agutierrezm.clase1.model.user;
+import mx.com.agutierrezm.clase1.util.PreferenceUtil;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText vUser;
     private EditText vPass;
+    private PreferenceUtil preferenceUtil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         vUser = (EditText)findViewById(R.id.activity_relative_user);
         vPass = (EditText)findViewById(R.id.activity_relative_pass);
         findViewById(R.id.activity_relative_btnlogin).setOnClickListener(this);
+        findViewById(R.id.activity_relative_btnregister).setOnClickListener(this);
+        preferenceUtil = new PreferenceUtil(getApplicationContext());
 
     }
 
@@ -31,22 +37,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.activity_relative_btnlogin:
                 processLogin();
                 break;
+            case R.id.activity_relative_btnregister:
+                launchRegister();
+                break;
 
         }
     }
 
+    private void launchRegister() {
+        startActivity(new Intent(getApplicationContext(),ActivityRegister.class));
+    }
+
     private void processLogin() {
-        final String user =    vUser.getText().toString();
-        final String pass = vPass.getText().toString();
-        /*loading.setVisibility(View.VISIBLE);*/
-        if (user.equals("alegutim") && pass.equals("1234a")){
-            Toast.makeText(getApplicationContext(),"Login",Toast.LENGTH_SHORT).show();
-            Intent intent =new  Intent(getApplicationContext(),FragmentActivity.class);
+        final String muser = vUser.getText().toString();
+        final String mpass = vPass.getText().toString();
+        //loading.setVisibility(View.)
+        user modeluser = preferenceUtil.getUser();
+        if (modeluser != null) {
+            if (muser.equals(modeluser.userName) && mpass.equals(modeluser.password)) {
+                Toast.makeText(getApplicationContext(), "Login", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), FragmentActivity.class);
             /*ntent intent =new  Intent(getApplicationContext(),ActivityDetail.class);*/
-            intent.putExtra("key_user",user);
-            startActivity(intent);
-        }else {
-            Toast.makeText(getApplicationContext(),"ERROR",Toast.LENGTH_SHORT).show();
+                intent.putExtra("key_user", muser);
+                startActivity(intent);
+            } else {
+                Toast.makeText(getApplicationContext(), "ERROR", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+
+            Toast.makeText(getApplicationContext(), "Register User", Toast.LENGTH_SHORT).show();
         }
     }
 }

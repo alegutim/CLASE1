@@ -20,16 +20,24 @@ import java.util.List;
 import mx.com.agutierrezm.clase1.R;
 import mx.com.agutierrezm.clase1.adapters.AdapterItemList;
 import mx.com.agutierrezm.clase1.model.ModelItem;
+import mx.com.agutierrezm.clase1.sql.ItemDataSource;
 
 /**
  * Created by Alumno on 11/06/2016.
  */
 public class FragmentList extends Fragment implements View.OnClickListener {
 private ListView listView;
-private List<ModelItem> array = new ArrayList<>()    ;
+//private List<ModelItem> array = new ArrayList<>()    ;
 private int counter;
 private EditText mItemText;
-private Boolean IsTrue = true;
+private Boolean IsTrue = false;
+private ItemDataSource itemDataSource;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        itemDataSource = new ItemDataSource(getActivity());
+    }
 
     @Nullable
     @Override
@@ -43,13 +51,16 @@ private Boolean IsTrue = true;
                                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                 AdapterItemList adapter = (AdapterItemList) parent.getAdapter();
                                                 ModelItem modelItem = adapter.getItem(position);
-                                                ModelItem modelItem2 = array.get(position);
-                                                Toast.makeText(getActivity(),modelItem2.item,Toast.LENGTH_SHORT).show();
+                                               // ModelItem modelItem2 = array.get(position);
+                                                Toast.makeText(getActivity(),modelItem.item,Toast.LENGTH_SHORT).show();
 
 
                                             }
                                         });
-
+        List<ModelItem> modelItemList = itemDataSource.getAllItems();
+        IsTrue = !(modelItemList.size()%2==0);
+        counter  = modelItemList.size();
+        listView.setAdapter(new AdapterItemList(getActivity(),modelItemList));
         return view;
     }
 
@@ -62,11 +73,11 @@ private Boolean IsTrue = true;
                 if (!TextUtils.isEmpty(itemData)){
                     ModelItem item = new ModelItem();
                     item.item= itemData;
-
                     item.id = "Description: " + counter;
                     item.resource_id = IsTrue ? R.drawable.ic_action_face_unlock:R.drawable.ic_action_bug_report;
-                    array.add(item);
-                    listView.setAdapter(new AdapterItemList(getActivity(),array));
+                    //array.add(item);
+                    itemDataSource.saveItem(item);
+                    listView.setAdapter(new AdapterItemList(getActivity(),itemDataSource.getAllItems()));
                     IsTrue=!IsTrue;
                     counter++;
                 }
